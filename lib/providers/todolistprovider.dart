@@ -15,9 +15,10 @@ class ToDoListProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void edit(String id, String edit) {
+  void edit(String id, String edit, String descEdit) {
     int index = _list.indexWhere((e) => e.getID == id);
     _list[index].setToDo = edit;
+    _list[index].setDesc = descEdit;
     notifyListeners();
   }
 

@@ -59,7 +59,7 @@ class ToDoListWidget extends StatelessWidget {
                   SizedBox(
                     width: 200,
                     child: Text(
-                      toDo.item,
+                      '${toDo.item}\n${toDo.desc}',
                       style: const TextStyle(
                         color: Colors.deepPurple,
                         fontSize: 28,
@@ -78,7 +78,9 @@ class ToDoListWidget extends StatelessWidget {
 
 Future<void> editItem(BuildContext context, ToDo toDo) async {
   TextEditingController editController = TextEditingController();
+  TextEditingController editDescController = TextEditingController();
   editController.text = toDo.item;
+  editDescController.text = toDo.desc;
   return showDialog(
       context: context,
       builder: (context) {
@@ -94,13 +96,26 @@ Future<void> editItem(BuildContext context, ToDo toDo) async {
             ),
           ),
           content: SizedBox(
+            height: 150,
             width: 500,
-            child: TextField(
-              controller: editController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Input Here',
-              ),
+            child: Column(
+              children: [
+                TextField(
+                  controller: editController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Edit Here',
+                  ),
+                ),
+                const Spacer(),
+                TextField(
+                  controller: editDescController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Edit Description',
+                  ),
+                ),
+              ],
             ),
           ),
           actions: [
@@ -108,7 +123,10 @@ Future<void> editItem(BuildContext context, ToDo toDo) async {
                 onPressed: () {
                   if (editController.text.isNotEmpty) {
                     final edit = editController.text;
-                    context.read<ToDoListProvider>().edit(toDo.getID, edit);
+                    final descEdit = editDescController.text;
+                    context
+                        .read<ToDoListProvider>()
+                        .edit(toDo.getID, edit, descEdit);
                     Navigator.pop(context);
                   }
                 },

@@ -34,6 +34,7 @@ class HomePage extends StatelessWidget {
 
 Future<void> addItem(BuildContext context) async {
   TextEditingController controller = TextEditingController();
+  TextEditingController descController = TextEditingController();
 
   return showDialog(
       context: context,
@@ -50,22 +51,38 @@ Future<void> addItem(BuildContext context) async {
             ),
           ),
           content: SizedBox(
+            height: 150,
             width: 500,
-            child: TextField(
-              controller: controller,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Input Here',
-              ),
+            child: Column(
+              children: [
+                TextField(
+                  controller: controller,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Input Here',
+                  ),
+                ),
+                const Spacer(),
+                TextField(
+                  controller: descController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Input Description',
+                  ),
+                ),
+              ],
             ),
           ),
           actions: [
             TextButton(
                 onPressed: () {
                   if (controller.text.isNotEmpty) {
-                    final newItem = ToDo(toDo: controller.text);
+                    final newItem = ToDo(
+                        toDo: controller.text,
+                        description: descController.text);
                     context.read<ToDoListProvider>().add(newItem);
                     controller.clear();
+                    descController.clear();
                     Navigator.pop(context);
                   }
                 },

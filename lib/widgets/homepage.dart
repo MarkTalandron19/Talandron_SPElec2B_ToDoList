@@ -38,10 +38,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('To Do List'),
-      ),
       body: pages[currrentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currrentIndex,

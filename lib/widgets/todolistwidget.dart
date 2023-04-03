@@ -13,6 +13,8 @@ class ToDoListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    var width = size.width;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -57,13 +59,12 @@ class ToDoListWidget extends StatelessWidget {
                   elevation: 30,
                   shadowColor: Colors.black,
                   child: Container(
-                    width: 400,
-                    constraints: const BoxConstraints(
-                      maxWidth: 500,
+                    constraints: BoxConstraints(
+                      maxWidth: width,
                       minHeight: 100,
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
                           constraints: const BoxConstraints(
@@ -86,19 +87,22 @@ class ToDoListWidget extends StatelessWidget {
                                 })),
                           ),
                         ),
+                        const SizedBox(
+                          width: 50,
+                        ),
                         Container(
+                          width: 80,
                           constraints: const BoxConstraints(
-                            maxWidth: 110,
+                            maxWidth: 80,
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 toDo.item,
-                                textAlign: TextAlign.left,
                                 style: const TextStyle(
                                   color: Colors.deepPurple,
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -107,7 +111,7 @@ class ToDoListWidget extends StatelessWidget {
                                       toDo.desc,
                                       style: const TextStyle(
                                         color: Colors.black,
-                                        fontSize: 14,
+                                        fontSize: 13,
                                         fontWeight: FontWeight.w400,
                                       ),
                                     )

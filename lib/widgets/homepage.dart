@@ -45,10 +45,100 @@ class _HomePageState extends State<HomePage> {
           currrentIndex = index;
         }),
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.check), label: 'Finish')
+          BottomNavigationBarItem(
+              icon: Icon(Icons.checklist_outlined), label: 'Todos'),
+          BottomNavigationBarItem(icon: Icon(Icons.check), label: 'Completed')
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          addItem(context);
+        },
+        child: const Icon(Icons.add),
+      ),
     );
+  }
+
+  Future<void> addItem(BuildContext context) async {
+    TextEditingController controller = TextEditingController();
+    TextEditingController descController = TextEditingController();
+
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            title: const Text(
+              'Add new to do item',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Colors.deepPurple,
+              ),
+            ),
+            content: SizedBox(
+              height: 150,
+              width: 500,
+              child: Column(
+                children: [
+                  TextField(
+                    controller: controller,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Input To Do item here',
+                    ),
+                  ),
+                  const Spacer(),
+                  TextField(
+                    controller: descController,
+                    keyboardType: TextInputType.multiline,
+                    minLines: 1,
+                    maxLines: 2,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Input Description',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    if (controller.text.isNotEmpty) {
+                      final newItem = ToDo(
+                          toDo: controller.text,
+                          description: descController.text);
+                      context.read<ToDoListProvider>().add(newItem);
+                      controller.clear();
+                      descController.clear();
+                      const snackBar =
+                          SnackBar(content: Text('To Do Item added'));
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: const Text(
+                    'Enter',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple,
+                    ),
+                  )),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                  )),
+            ],
+          );
+        });
   }
 }

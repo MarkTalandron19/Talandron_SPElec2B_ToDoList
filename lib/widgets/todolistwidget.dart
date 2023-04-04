@@ -44,6 +44,9 @@ class ToDoListWidget extends StatelessWidget {
                   SlidableAction(
                       onPressed: (context) {
                         context.read<ToDoListProvider>().remove(toDo.getID);
+                        const snackBar =
+                            SnackBar(content: Text('To Do item removed'));
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       },
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
@@ -83,6 +86,10 @@ class ToDoListWidget extends StatelessWidget {
                                     context
                                         .read<ToDoListProvider>()
                                         .transferCompleted(toDo.getID);
+                                    const snackBar = SnackBar(
+                                        content: Text('Task completed'));
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
                                   });
                                 })),
                           ),
@@ -130,172 +137,110 @@ class ToDoListWidget extends StatelessWidget {
           );
         }).toList(),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          addItem(context);
-        },
-        child: const Icon(Icons.add),
-      ),
     );
   }
-}
 
-Future<void> addItem(BuildContext context) async {
-  TextEditingController controller = TextEditingController();
-  TextEditingController descController = TextEditingController();
-
-  return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
-          title: const Text(
-            'Add new to do item',
-            style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-              color: Colors.deepPurple,
-            ),
-          ),
-          content: SizedBox(
-            height: 150,
-            width: 500,
-            child: Column(
+  Future<void> editItem(BuildContext context, ToDo toDo) async {
+    TextEditingController editController = TextEditingController();
+    TextEditingController editDescController = TextEditingController();
+    editController.text = toDo.item;
+    editDescController.text = toDo.desc;
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextField(
-                  controller: controller,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Input Here',
-                  ),
-                ),
-                const Spacer(),
-                TextField(
-                  controller: descController,
-                  keyboardType: TextInputType.multiline,
-                  minLines: 1,
-                  maxLines: 2,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Input Description',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  if (controller.text.isNotEmpty) {
-                    final newItem = ToDo(
-                        toDo: controller.text,
-                        description: descController.text);
-                    context.read<ToDoListProvider>().add(newItem);
-                    controller.clear();
-                    descController.clear();
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text(
-                  'Enter',
+                const Text(
+                  'Edit to do item',
                   style: TextStyle(
+                    fontSize: 25,
                     fontWeight: FontWeight.bold,
                     color: Colors.deepPurple,
                   ),
-                )),
-            TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Cancel',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
-                  ),
-                )),
-          ],
-        );
-      });
-}
-
-Future<void> editItem(BuildContext context, ToDo toDo) async {
-  TextEditingController editController = TextEditingController();
-  TextEditingController editDescController = TextEditingController();
-  editController.text = toDo.item;
-  editDescController.text = toDo.desc;
-  return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
-          title: const Text(
-            'Edit to do item',
-            style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-              color: Colors.deepPurple,
-            ),
-          ),
-          content: SizedBox(
-            height: 150,
-            width: 500,
-            child: Column(
-              children: [
-                TextField(
-                  controller: editController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Edit Here',
-                  ),
                 ),
-                const Spacer(),
-                TextField(
-                  controller: editDescController,
-                  keyboardType: TextInputType.multiline,
-                  minLines: 1,
-                  maxLines: 10,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Edit Description',
-                  ),
-                ),
+                IconButton(
+                    onPressed: () {
+                      context.read<ToDoListProvider>().remove(toDo.getID);
+                      editController.clear();
+                      editDescController.clear();
+                      const snackBar =
+                          SnackBar(content: Text('To Do item removed'));
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ))
               ],
             ),
-          ),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  if (editController.text.isNotEmpty) {
-                    final edit = editController.text;
-                    final descEdit = editDescController.text;
-                    context
-                        .read<ToDoListProvider>()
-                        .edit(toDo.getID, edit, descEdit);
+            content: SizedBox(
+              height: 150,
+              width: 500,
+              child: Column(
+                children: [
+                  TextField(
+                    controller: editController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Edit Here',
+                    ),
+                  ),
+                  const Spacer(),
+                  TextField(
+                    controller: editDescController,
+                    keyboardType: TextInputType.multiline,
+                    minLines: 1,
+                    maxLines: 2,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Edit Description',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    if (editController.text.isNotEmpty) {
+                      final edit = editController.text;
+                      final descEdit = editDescController.text;
+                      context
+                          .read<ToDoListProvider>()
+                          .edit(toDo.getID, edit, descEdit);
+                      editController.clear();
+                      editDescController.clear();
+                      const snackBar =
+                          SnackBar(content: Text('To Do item edited'));
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: const Text(
+                    'Enter',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple,
+                    ),
+                  )),
+              TextButton(
+                  onPressed: () {
                     Navigator.pop(context);
-                  }
-                },
-                child: const Text(
-                  'Enter',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple,
-                  ),
-                )),
-            TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Cancel',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
-                  ),
-                )),
-          ],
-        );
-      });
+                  },
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                  )),
+            ],
+          );
+        });
+  }
 }

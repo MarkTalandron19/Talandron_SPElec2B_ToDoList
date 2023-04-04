@@ -22,73 +22,88 @@ class FinishListWidget extends StatelessWidget {
         children: list.map((toDo) {
           return Padding(
               padding: const EdgeInsets.all(5.0),
-              child: Card(
-                elevation: 30,
-                shadowColor: Colors.black,
-                child: Container(
-                  constraints: BoxConstraints(
-                    maxWidth: width,
-                    minHeight: 100,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        constraints: const BoxConstraints(
-                          maxWidth: 100,
-                        ),
-                        child: Transform.scale(
-                          scale: 1.6,
-                          child: Checkbox(
-                              value: toDo.getComplete,
-                              onChanged: ((_) async {
-                                context
-                                    .read<ToDoListProvider>()
-                                    .setTaskUnfinish(toDo.getID);
-                                Future.delayed(
-                                    const Duration(milliseconds: 200), () {
+              child: Dismissible(
+                key: Key(toDo.getID),
+                onDismissed: (direction) {
+                  context
+                      .read<ToDoListProvider>()
+                      .removeFromCompleted(toDo.getID);
+                  const snackBar =
+                      SnackBar(content: Text('Completed task removed'));
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                },
+                child: Card(
+                  elevation: 30,
+                  shadowColor: Colors.black,
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxWidth: width,
+                      minHeight: 100,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          constraints: const BoxConstraints(
+                            maxWidth: 100,
+                          ),
+                          child: Transform.scale(
+                            scale: 1.6,
+                            child: Checkbox(
+                                value: toDo.getComplete,
+                                onChanged: ((_) async {
                                   context
                                       .read<ToDoListProvider>()
-                                      .transferUnfinished(toDo.getID);
-                                });
-                              })),
+                                      .setTaskUnfinish(toDo.getID);
+                                  Future.delayed(
+                                      const Duration(milliseconds: 200), () {
+                                    context
+                                        .read<ToDoListProvider>()
+                                        .transferUnfinished(toDo.getID);
+                                    const snackBar = SnackBar(
+                                        content: Text('Task returned to list'));
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                  });
+                                })),
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 50,
-                      ),
-                      Container(
-                        width: 80,
-                        constraints: const BoxConstraints(
-                          maxWidth: 80,
+                        const SizedBox(
+                          width: 50,
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              toDo.item,
-                              style: const TextStyle(
-                                color: Colors.deepPurple,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
+                        Container(
+                          width: 80,
+                          constraints: const BoxConstraints(
+                            maxWidth: 80,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                toDo.item,
+                                style: const TextStyle(
+                                  color: Colors.deepPurple,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            toDo.desc != ''
-                                ? Text(
-                                    toDo.desc,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w400,
+                              toDo.desc != ''
+                                  ? Text(
+                                      toDo.desc,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    )
+                                  : const SizedBox(
+                                      height: 0,
                                     ),
-                                  )
-                                : const SizedBox(
-                                    height: 0,
-                                  ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ));

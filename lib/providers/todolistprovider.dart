@@ -28,6 +28,12 @@ class ToDoListProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeFromCompleted(String id) {
+    int index = _completed.indexWhere((e) => e.getID == id);
+    _completed.removeAt(index);
+    notifyListeners();
+  }
+
   void setTaskComplete(String id) {
     int index = _list.indexWhere((e) => e.getID == id);
     _list[index].setCompleted();
